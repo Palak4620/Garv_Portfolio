@@ -70,7 +70,7 @@ const Portfolio = () => {
       </header>
 
       {/* Main Content */}
-      <main className="relative px-4 pt-16 pb-25 md:px-20 flex flex-col gap-6 max-w-8xl mx-auto overflow-hidden">
+      <main className="relative px-4 pt-16 pb-24 md:px-20 flex flex-col gap-6 max-w-8xl mx-auto overflow-hidden">
         {/* Background Logo - Hidden on mobile */}
 <div className="absolute top-0 h-[490px] w-[150%] pointer-events-none opacity-10 
                 right-[-380px] sm:right-[-200px] md:right-[-450px]">
