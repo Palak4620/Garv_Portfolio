@@ -1,0 +1,35 @@
+.header{
+    padding: 1.5rem 4rem 0.5rem;
+}
+
+.circle{
+    margin-left: 0.22rem;
+    margin-right: 0.2rem;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(to left, rgba(18,18,18,1), rgba(18,18,18,0));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-logo-partial {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 50%; /* show only half */
+  background-image: url('/your-logo-path.png'); /* update with actual path */
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
+  opacity: 0.05; /* watermark effect */
+  pointer-events: none;
+  z-index: 0;
+}
