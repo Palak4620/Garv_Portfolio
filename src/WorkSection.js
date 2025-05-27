@@ -22,6 +22,21 @@ const getYouTubeThumbnail = (url) => {
 // Video sets for each project
 const videoMap = {
   0: [
+    { title: 'Showreel 1', url: 'https://player.vimeo.com/video/837125126?h=9389e8d9e0' },
+  ],
+  1: [
+    { title: 'Short 1', url: 'https://player.vimeo.com/video/1087460269?h=b4d8e7a761' },
+    { title: 'Short 2', url: 'https://player.vimeo.com/video/1087461481?h=ae137dafca' },
+    { title: 'Short 3', url: 'https://player.vimeo.com/video/1087460769?h=782b27510e' },
+  ],
+  2: [
+    { title: 'Promo Video', url: 'https://player.vimeo.com/video/886753550?h=6e1217d2f7' },
+  ],
+  3: [
+    { title: 'Website Walkthrough1', url: 'https://player.vimeo.com/video/1087461468?h=c15a10344b' },
+    { title: 'Website Walkthrough2', url: 'https://player.vimeo.com/video/1087461433?h=e927563ec8' },
+  ],  
+  4: [
     { title: 'Gameplay 1', url: 'https://youtu.be/nKFBvgwh-PA?feature=shared' },
     { title: 'Gameplay 2', url: 'https://youtu.be/m0RQO5EcLzE?feature=shared' },
     { title: 'Gameplay 3', url: 'https://youtu.be/UfUu4MJPbdk?feature=shared' },
@@ -29,39 +44,9 @@ const videoMap = {
     { title: 'Gameplay 5', url: 'https://youtu.be/PaSXRX57FoI?feature=shared' },
     { title: 'Gameplay 6', url: 'https://youtu.be/H3Ol5ovAGz0?si=vKYzjWFAUB30hrCu' },
   ],
-  1: [
-    { title: 'Website Walkthrough1', url: 'https://player.vimeo.com/video/1087461468?h=c15a10344b' },
-    { title: 'Website Walkthrough2', url: 'https://player.vimeo.com/video/1087461433?h=e927563ec8' },
-  ],
-  2: [
-    { title: 'Showreel 1', url: 'https://player.vimeo.com/video/837125126?h=9389e8d9e0' },
-  ],
-
-  3: [
-    { title: 'Promo Video', url: 'https://player.vimeo.com/video/886753550?h=6e1217d2f7' },
-  ],
-  4: [
-    { title: 'Short 1', url: 'https://player.vimeo.com/video/1087460269?h=b4d8e7a761' },
-    { title: 'Short 2', url: 'https://player.vimeo.com/video/1087461481?h=ae137dafca' },
-    { title: 'Short 3', url: 'https://player.vimeo.com/video/1087460769?h=782b27510e' },
-  ],
 };
 
 const projects = [
-  {
-    title: 'Gaming Video Edits',
-    description: 'Expertly edited gaming montages showcasing high-energy action, memorable plays, and thrilling sequences. These short, impactful videos are optimized for social media, featuring smooth transitions, energetic pacing, and well-timed effects to boost engagement.',
-    tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
-    image: Gaming_Edits,
-    link: 'https://www.youtube.com/playlist?list=PLsdfcb42cePHPBmKUAFAUolbANN1DMgug',
-  },
-  {
-    title: 'Website Animations',
-    description: "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
-    tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
-    image: Website,
-    link: 'https://drive.google.com/folder/abc',
-  },
  {
     title: 'Video Editing Showreel',
     description: 'This Showreel highlights my skills, showcasing variety of styles form quick cuts to cinematic sequences. I craft engaging and dynamic edits, animations and designs which combined together can be a game changer. Be it promotions, social media content or product showcases, I got you covered.',
@@ -70,18 +55,32 @@ const projects = [
     link: 'https://vimeo.com/837125126?share=copy',
   },
   {
+    title: 'Short-form Content',
+    description: 'These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.',
+    tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
+    image: Shorts,
+    link: 'https://drive.google.com/folder/xyz',
+  },
+  {
     title: 'Promo Videos',
     description: 'These Promo Videos offers a cinematic look into the information of the products showcased, from game trailer to websites walkthrough. These videos brings a cinematic experience and builds excitement and anticipation for the release of the product.',
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
     image: Promo,
     link: '#',
   },
-  {
-    title: 'Short-form Content',
-    description: 'These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.',
+ {
+    title: 'Website Animations',
+    description: "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
-    image: Shorts,
-    link: 'https://drive.google.com/folder/xyz',
+    image: Website,
+    link: 'https://drive.google.com/folder/abc',
+  },
+  {
+    title: 'Gaming Video Edits',
+    description: 'Expertly edited gaming montages showcasing high-energy action, memorable plays, and thrilling sequences. These short, impactful videos are optimized for social media, featuring smooth transitions, energetic pacing, and well-timed effects to boost engagement.',
+    tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
+    image: Gaming_Edits,
+    link: 'https://www.youtube.com/playlist?list=PLsdfcb42cePHPBmKUAFAUolbANN1DMgug',
   },
  
 ];
