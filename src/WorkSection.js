@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ReactPlayer from 'react-player';
 import Gaming_Edits from './icons/Gaming_Edits.jpg';
@@ -21,21 +21,17 @@ const getYouTubeThumbnail = (url) => {
 
 // Video sets for each project
 const videoMap = {
-  0: [
-    { title: 'Showreel 1', url: 'https://player.vimeo.com/video/837125126?h=9389e8d9e0' },
-  ],
+  0: [{ title: 'Showreel 1', url: 'https://player.vimeo.com/video/837125126?h=9389e8d9e0' }],
   1: [
     { title: 'Short 1', url: 'https://player.vimeo.com/video/1087460269?h=b4d8e7a761' },
     { title: 'Short 2', url: 'https://player.vimeo.com/video/1087461481?h=ae137dafca' },
     { title: 'Short 3', url: 'https://player.vimeo.com/video/1087460769?h=782b27510e' },
   ],
-  2: [
-    { title: 'Promo Video', url: 'https://player.vimeo.com/video/886753550?h=6e1217d2f7' },
-  ],
+  2: [{ title: 'Promo Video', url: 'https://player.vimeo.com/video/886753550?h=6e1217d2f7' }],
   3: [
     { title: 'Website Walkthrough1', url: 'https://player.vimeo.com/video/1087461468?h=c15a10344b' },
     { title: 'Website Walkthrough2', url: 'https://player.vimeo.com/video/1087461433?h=e927563ec8' },
-  ],  
+  ],
   4: [
     { title: 'Gameplay 1', url: 'https://youtu.be/nKFBvgwh-PA?feature=shared' },
     { title: 'Gameplay 2', url: 'https://youtu.be/m0RQO5EcLzE?feature=shared' },
@@ -47,47 +43,60 @@ const videoMap = {
 };
 
 const projects = [
- {
+  {
     title: 'Video Editing Showreel',
-    description: 'This Showreel highlights my skills, showcasing variety of styles form quick cuts to cinematic sequences. I craft engaging and dynamic edits, animations and designs which combined together can be a game changer. Be it promotions, social media content or product showcases, I got you covered.',
+    description:
+      'This Showreel highlights my skills, showcasing variety of styles form quick cuts to cinematic sequences. I craft engaging and dynamic edits, animations and designs which combined together can be a game changer. Be it promotions, social media content or product showcases, I got you covered.',
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
     image: Showreel,
     link: 'https://vimeo.com/837125126?share=copy',
   },
   {
     title: 'Short-form Content',
-    description: 'These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.',
+    description:
+      'These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.',
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
     image: Shorts,
     link: 'https://drive.google.com/folder/xyz',
   },
   {
     title: 'Promo Videos',
-    description: 'These Promo Videos offers a cinematic look into the information of the products showcased, from game trailer to websites walkthrough. These videos brings a cinematic experience and builds excitement and anticipation for the release of the product.',
+    description:
+      'These Promo Videos offers a cinematic look into the information of the products showcased, from game trailer to websites walkthrough. These videos brings a cinematic experience and builds excitement and anticipation for the release of the product.',
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
     image: Promo,
     link: '#',
   },
- {
+  {
     title: 'Website Animations',
-    description: "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
+    description:
+      "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
     image: Website,
     link: 'https://drive.google.com/folder/abc',
   },
   {
     title: 'Gaming Video Edits',
-    description: 'Expertly edited gaming montages showcasing high-energy action, memorable plays, and thrilling sequences. These short, impactful videos are optimized for social media, featuring smooth transitions, energetic pacing, and well-timed effects to boost engagement.',
+    description:
+      'Expertly edited gaming montages showcasing high-energy action, memorable plays, and thrilling sequences. These short, impactful videos are optimized for social media, featuring smooth transitions, energetic pacing, and well-timed effects to boost engagement.',
     tags: ['After Effects', 'Premiere Pro', 'Illustrator', 'Photoshop'],
     image: Gaming_Edits,
     link: 'https://www.youtube.com/playlist?list=PLsdfcb42cePHPBmKUAFAUolbANN1DMgug',
   },
- 
 ];
 
 const WorkSection = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const [playingVideoIndex, setPlayingVideoIndex] = useState(null);
+  const videoRefs = useRef([]);
+
+  useEffect(() => {
+    if (activeIndex !== null && videoRefs.current[activeIndex]) {
+      setTimeout(() => {
+        videoRefs.current[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [activeIndex]);
 
   return (
     <section id="work" className="bg-[#1a1a1a] py-20 text-white px-4 md:px-10 lg:px-20">
@@ -108,7 +117,9 @@ const WorkSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} bg-[#1c1c1c] rounded-xl overflow-hidden`}
+              className={`flex flex-col ${
+                index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+              } bg-[#1c1c1c] rounded-xl overflow-hidden`}
             >
               {/* Clickable Image */}
               <div
@@ -132,7 +143,10 @@ const WorkSection = () => {
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag, i) => (
-                    <span key={i} className="bg-[#333] text-sm text-gray-300 px-3 py-1 rounded-full">
+                    <span
+                      key={i}
+                      className="bg-[#333] text-sm text-gray-300 px-3 py-1 rounded-full"
+                    >
                       {tag}
                     </span>
                   ))}
@@ -152,7 +166,10 @@ const WorkSection = () => {
 
             {/* Video Gallery */}
             {activeIndex === index && (
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-[#111] p-6 rounded-xl">
+              <div
+                ref={(el) => (videoRefs.current[index] = el)}
+                className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-[#111] p-6 rounded-xl"
+              >
                 {videoMap[index]?.map((video, vidIndex) => (
                   <div
                     key={vidIndex}
