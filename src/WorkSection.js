@@ -27,7 +27,7 @@ const videoMap = {
     { title: 'Short 2', url: 'https://youtu.be/BNOOdIq5sV0' },
     { title: 'Short 3', url: 'https://youtu.be/wB-FtYX9JvI' },
   ],
-  2: [{ title: 'Promo Video', url: 'https://player.vimeo.com/video/886753550?h=6e1217d2f7' }],
+  2: [{ title: 'Promo Video', url: 'https://youtu.be/9qKOWWM_bzM' }],
   3: [
     { title: 'Website Walkthrough1', url: 'https://youtu.be/XQVTTvxBRb0' },
     { title: 'Website Walkthrough2', url: 'https://youtu.be/LXRg-eyfXso' },
