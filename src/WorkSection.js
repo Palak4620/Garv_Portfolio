@@ -21,16 +21,16 @@ const getYouTubeThumbnail = (url) => {
 
 // Video sets for each project
 const videoMap = {
-  0: [{ title: 'Showreel 1', url: 'https://player.vimeo.com/video/837125126?h=9389e8d9e0' }],
+  0: [{ title: 'Showreel 1', url: 'https://youtu.be/NtYKCg6kagM' }],
   1: [
     { title: 'Short 1', url: 'https://player.vimeo.com/video/1087460269?h=b4d8e7a761' },
-    { title: 'Short 2', url: 'https://player.vimeo.com/video/1087461481?h=ae137dafca' },
-    { title: 'Short 3', url: 'https://player.vimeo.com/video/1087460769?h=782b27510e' },
+    { title: 'Short 2', url: 'https://youtu.be/BNOOdIq5sV0' },
+    { title: 'Short 3', url: 'https://youtu.be/wB-FtYX9JvI' },
   ],
   2: [{ title: 'Promo Video', url: 'https://player.vimeo.com/video/886753550?h=6e1217d2f7' }],
   3: [
-    { title: 'Website Walkthrough1', url: 'https://player.vimeo.com/video/1087461468?h=c15a10344b' },
-    { title: 'Website Walkthrough2', url: 'https://player.vimeo.com/video/1087461433?h=e927563ec8' },
+    { title: 'Website Walkthrough1', url: 'https://youtu.be/XQVTTvxBRb0' },
+    { title: 'Website Walkthrough2', url: 'https://youtu.be/LXRg-eyfXso' },
   ],
   4: [
     { title: 'Gameplay 1', url: 'https://youtu.be/nKFBvgwh-PA?feature=shared' },
@@ -93,7 +93,8 @@ const WorkSection = () => {
   useEffect(() => {
     if (activeIndex !== null && videoRefs.current[activeIndex]) {
       setTimeout(() => {
-        videoRefs.current[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        videoRefs.current[activeIndex].scrollIntoView({ behavior: 'smooth',   block: 'end',
+  inline: 'nearest', });
       }, 100);
     }
   }, [activeIndex]);
