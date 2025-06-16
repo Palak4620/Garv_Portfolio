@@ -93,8 +93,7 @@ const WorkSection = () => {
   useEffect(() => {
     if (activeIndex !== null && videoRefs.current[activeIndex]) {
       setTimeout(() => {
-        videoRefs.current[activeIndex].scrollIntoView({ behavior: 'smooth',   block: 'end',
-  inline: 'nearest', });
+        videoRefs.current[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
       }, 100);
     }
   }, [activeIndex]);
@@ -174,11 +173,21 @@ const WorkSection = () => {
                 {videoMap[index]?.map((video, vidIndex) => (
                   <div
                     key={vidIndex}
-                    className="w-full h-[200px] bg-[#333] rounded-lg overflow-hidden cursor-pointer hover:opacity-80"
+                    className={`relative w-full ${
+  index === 1 ? 'aspect-[9/16]' : 'aspect-video'
+} bg-[#333] rounded-lg overflow-hidden cursor-pointer hover:opacity-80`}
+
                     onClick={() => setPlayingVideoIndex(vidIndex)}
                   >
                     {playingVideoIndex === vidIndex ? (
-                      <ReactPlayer url={video.url} width="100%" height="100%" controls playing />
+                      <ReactPlayer
+                        url={video.url}
+                        width="100%"
+                        height="100%"
+                        controls
+                        playing
+                        style={{ objectFit: 'cover' }}
+                      />
                     ) : isVimeo(video.url) ? (
                       <iframe
                         src={video.url}
@@ -188,7 +197,7 @@ const WorkSection = () => {
                         allow="autoplay; fullscreen"
                         allowFullScreen
                         title={video.title}
-                        className="rounded-lg"
+                        className="w-full h-full object-cover rounded-lg"
                       ></iframe>
                     ) : (
                       <img
