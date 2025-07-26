@@ -72,10 +72,10 @@ const Portfolio = () => {
       {/* Main Content */}
       <main className="relative px-4 pt-16 pb-28 md:px-20 flex flex-col gap-6 max-w-8xl mx-auto overflow-hidden">
         {/* Background Logo - Hidden on mobile */}
-<div className="absolute top-0 h-[490px] w-[150%] pointer-events-none opacity-10 
+        <div className="absolute top-0 h-[490px] w-[150%] pointer-events-none opacity-10 
                 right-[-380px] sm:right-[-200px] md:right-[-450px]">
-  <img src={bgLogo} alt="Background G Logo" className="h-full object-cover ml-auto" />
-</div>
+          <img src={bgLogo} alt="Background G Logo" className="h-full object-cover ml-auto" />
+        </div>
 
         {/* Main Text */}
         <motion.div
@@ -89,8 +89,7 @@ const Portfolio = () => {
             Video Editor & and Motion Graphics Artist
           </h2>
           <p className="text-gray-400 text-sm md:text-base mt-2 leading-relaxed">
-            With 5+ years of professional experience, I specialize in high-impact video editing and motion design tailored for social media, branding, and promotional content. My work combines clean visual storytelling, sharp pacing, and design-driven motion graphics to boost engagement and communicate messages effectively. From fast-paced edits to polished corporate visuals, I turn creative ideas into compelling content that delivers results. Let's bring your idea to vision!
-          </p>
+            I’m a video editor and motion designer with 5+ years of experience, specializing in social media, branding, and promotional content. I create clean, engaging visuals with sharp pacing and design-driven motion graphics to turn ideas into impactful results.          </p>
 
           {/* Location and Status */}
           <div className="flex flex-col gap-2 text-gray-400 mt-4 text-sm md:text-base">

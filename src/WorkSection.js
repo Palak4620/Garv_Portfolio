@@ -23,6 +23,7 @@ const getYouTubeThumbnail = (url) => {
 const videoMap = {
   0: [{ title: 'Showreel 1', url: 'https://youtu.be/NtYKCg6kagM' }],
   1: [
+    { title: 'Short 1', url: 'https://youtu.be/TQjYB0Yhspc?feature=shared' },
     { title: 'Short 1', url: 'https://player.vimeo.com/video/1087460269?h=b4d8e7a761' },
     { title: 'Short 2', url: 'https://youtu.be/BNOOdIq5sV0' },
     { title: 'Short 3', url: 'https://youtu.be/wB-FtYX9JvI' },
