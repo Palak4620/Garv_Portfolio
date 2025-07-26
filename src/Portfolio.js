@@ -90,7 +90,9 @@ const Portfolio = () => {
           </h2>
           <p className="text-gray-400 text-sm md:text-base mt-2 leading-relaxed">
             I’m a video editor and motion designer with 5+ years of experience, specializing in social media, branding, and promotional content. I create clean, engaging visuals with sharp pacing and design-driven motion graphics to turn ideas into impactful results.          </p>
-
+          <br></br>
+          <br></br>
+          <br></br>
           {/* Location and Status */}
           <div className="flex flex-col gap-2 text-gray-400 mt-4 text-sm md:text-base">
             <span className="flex items-center gap-2">
