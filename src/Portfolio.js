@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "tailwindcss/tailwind.css";
-import { FaInstagram, FaLinkedin, FaMapMarkerAlt, FaBars, FaTimes } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaLinkedin,
+  FaMapMarkerAlt,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
 import logo from "./Garv_logo_enhanched.png";
 import bgLogo from "./Garv_logo_enhanched.png";
 
@@ -40,8 +46,15 @@ const Portfolio = () => {
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden">
-          <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle Menu">
-            {menuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle Menu"
+          >
+            {menuOpen ? (
+              <FaTimes className="text-2xl" />
+            ) : (
+              <FaBars className="text-2xl" />
+            )}
           </button>
         </div>
 
@@ -72,9 +85,15 @@ const Portfolio = () => {
       {/* Main Content */}
       <main className="relative px-4 pt-16 pb-28 md:px-20 flex flex-col gap-6 max-w-8xl mx-auto overflow-hidden">
         {/* Background Logo - Hidden on mobile */}
-        <div className="absolute top-0 h-[490px] w-[150%] pointer-events-none opacity-10 
-                right-[-380px] sm:right-[-200px] md:right-[-450px]">
-          <img src={bgLogo} alt="Background G Logo" className="h-full object-cover ml-auto" />
+        <div
+          className="absolute top-0 h-[490px] w-[210%] pointer-events-none opacity-10 
+                right-[-400px] sm:right-[-200px] md:right-[-450px]"
+        >
+          <img
+            src={bgLogo}
+            alt="Background G Logo"
+            className="h-full object-cover ml-auto"
+          />
         </div>
 
         {/* Main Text */}
@@ -84,12 +103,18 @@ const Portfolio = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl md:text-5xl mb-3 font-bold">Hi, I am Garv Jain</h1>
+          <h1 className="text-3xl md:text-5xl mb-3 font-bold">
+            Hi, I am Garv Jain
+          </h1>
           <h2 className="text-lg md:text-2xl mb-4 text-gray-300 font-semibold">
-            Video Editor & and Motion Graphics Artist
+            Motion Graphics Artist & Video Editor
           </h2>
           <p className="text-gray-400 text-sm md:text-base mt-2 leading-relaxed">
-            I’m a video editor and motion designer with 5+ years of experience, specializing in social media, branding, and promotional content. I create clean, engaging visuals with sharp pacing and design-driven motion graphics to turn ideas into impactful results.          </p>
+            I’m a motion designer and video editor with 5+ years of experience,
+            specializing in social media, branding, and promotional content. I
+            craft clean, design-driven motion graphics paired with sharp editing
+            to create engaging visuals that turn ideas into impactful results.{" "}
+          </p>
           <br></br>
           <br></br>
           {/* Location and Status */}
