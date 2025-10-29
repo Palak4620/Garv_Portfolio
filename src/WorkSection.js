@@ -22,11 +22,14 @@ const getYouTubeThumbnail = (url) => {
 
 // Video sets for each project
 const videoMap = {
-  0: [{ title: "Showreel 1", url: "https://youtu.be/NtYKCg6kagM" }],
+  0: [{ title: "Showreel 1", url: "https://youtu.be/3VM-ayBwYMY?si=-C8_78CAFuoNoReV" }],
+
   1: [
-    { title: "Short 1", url: "https://youtu.be/TQjYB0Yhspc?feature=shared" },
-    { title: "Short 2", url: "https://youtu.be/BNOOdIq5sV0" },
-    { title: "Short 3", url: "https://youtu.be/wB-FtYX9JvI" },
+    { title: "Promo Video", url: "https://youtu.be/9qKOWWM_bzM" },
+    {
+      title: "Promo Video",
+      url: "https://youtu.be/gA13t1-zdVM?si=vrNmYhctbLYva4Pe",
+    },
   ],
   2: [
     { title: "Logo Title Animation 1", url: "https://youtu.be/x5cykILO1Rw" },
@@ -36,7 +39,12 @@ const videoMap = {
     },
     { title: "Logo Title Animation 3", url: "https://youtu.be/fOLtinr477s" },
   ],
-  3: [{ title: "Promo Video", url: "https://youtu.be/9qKOWWM_bzM" }],
+  3: [
+    { title: "Short 1", url: "https://youtu.be/TQjYB0Yhspc?feature=shared" },
+    { title: "Short 2", url: "https://youtu.be/BNOOdIq5sV0" },
+    { title: "Short 3", url: "https://youtu.be/wB-FtYX9JvI" },
+  ],
+
   4: [
     { title: "Website Walkthrough1", url: "https://youtu.be/XQVTTvxBRb0" },
     { title: "Website Walkthrough2", url: "https://youtu.be/LXRg-eyfXso" },
@@ -56,28 +64,12 @@ const videoMap = {
 
 const projects = [
   {
-    title: "Video Editing Showreel",
+    title: "Portfolio Showreel",
     description:
-      "This Showreel highlights my skills, showcasing variety of styles form quick cuts to cinematic sequences. I craft engaging and dynamic edits, animations and designs which combined together can be a game changer. Be it promotions, social media content or product showcases, I got you covered.",
+      "This Showreel highlights my motion design expertise blending sleek animations, dynamic compositions, and diverse styles from clean minimalism to cinematic storytelling. I craft visually engaging and impactful motion graphics that elevate brands and ideas. Whether it’s promotional videos, social media visuals, or product showcases, I’ve got you covered.",
     tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
     image: Showreel,
     link: "https://vimeo.com/837125126?share=copy",
-  },
-  {
-    title: "Short-form Content",
-    description:
-      "These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Shorts,
-    link: "https://drive.google.com/folder/xyz",
-  },
-  {
-    title: " Logo Animations",
-    description:
-      "These logo animations crafted for brands and creators, focus on dynamic visuals, smooth transitions, and impactful reveals to elevate brand identity. From minimal animations to bold cinematic styles, everything is covered.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Logo_Title_Animation,
-    link: "#",
   },
   {
     title: "Promo Videos",
@@ -87,6 +79,24 @@ const projects = [
     image: Promo,
     link: "#",
   },
+  {
+    title: " Logo Animations",
+    description:
+      "These logo animations crafted for brands and creators, focus on dynamic visuals, smooth transitions, and impactful reveals to elevate brand identity. From minimal animations to bold cinematic styles, everything is covered.",
+    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
+    image: Logo_Title_Animation,
+    link: "#",
+  },
+
+  {
+    title: "Short-form Content",
+    description:
+      "These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.",
+    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
+    image: Shorts,
+    link: "https://drive.google.com/folder/xyz",
+  },
+
   {
     title: "Website Animations",
     description:
@@ -206,7 +216,7 @@ const WorkSection = () => {
                   <div
                     key={vidIndex}
                     className={`relative w-full ${
-                      index === 1 ? "aspect-[9/16]" : "aspect-video"
+                      index === 3 ? "aspect-[9/16]" : "aspect-video"
                     } bg-[#333] rounded-lg overflow-hidden cursor-pointer hover:opacity-80`}
                     onClick={() => setPlayingVideoIndex(vidIndex)}
                   >
