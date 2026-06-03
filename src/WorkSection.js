@@ -53,7 +53,7 @@ const videoMap = {
   //   { title: "Website Walkthrough1", url: "https://youtu.be/XQVTTvxBRb0" },
   //   { title: "Website Walkthrough2", url: "https://youtu.be/LXRg-eyfXso" },
   // ],
-  5: [
+  4: [
     { title: "Gameplay 1", url: "https://youtu.be/nKFBvgwh-PA?feature=shared" },
     { title: "Gameplay 2", url: "https://youtu.be/m0RQO5EcLzE?feature=shared" },
     { title: "Gameplay 3", url: "https://youtu.be/UfUu4MJPbdk?feature=shared" },
