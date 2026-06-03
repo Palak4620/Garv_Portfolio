@@ -30,6 +30,10 @@ const videoMap = {
       title: "Promo Video",
       url: "https://youtu.be/gA13t1-zdVM?si=vrNmYhctbLYva4Pe",
     },
+    {
+      title: "Promo Video",
+      url: "https://youtu.be/h2wzcmeoHuA?si=--qCOdepj3_2TKZn",
+    },
   ],
   2: [
     { title: "Logo Title Animation 1", url: "https://youtu.be/x5cykILO1Rw" },
@@ -41,14 +45,14 @@ const videoMap = {
   ],
   3: [
     { title: "Short 1", url: "https://youtu.be/TQjYB0Yhspc?feature=shared" },
-    { title: "Short 2", url: "https://youtu.be/BNOOdIq5sV0" },
-    { title: "Short 3", url: "https://youtu.be/wB-FtYX9JvI" },
+    { title: "Short 2", url: "https://youtu.be/OK3fMbiNwqE?si=EGFN02R3DmyUnoA8" },
+    { title: "Short 3", url: "https://youtu.be/npJXLGYymMM?si=jbbZQKiqyGco42Is" },
   ],
 
-  4: [
-    { title: "Website Walkthrough1", url: "https://youtu.be/XQVTTvxBRb0" },
-    { title: "Website Walkthrough2", url: "https://youtu.be/LXRg-eyfXso" },
-  ],
+  // 4: [
+  //   { title: "Website Walkthrough1", url: "https://youtu.be/XQVTTvxBRb0" },
+  //   { title: "Website Walkthrough2", url: "https://youtu.be/LXRg-eyfXso" },
+  // ],
   5: [
     { title: "Gameplay 1", url: "https://youtu.be/nKFBvgwh-PA?feature=shared" },
     { title: "Gameplay 2", url: "https://youtu.be/m0RQO5EcLzE?feature=shared" },
@@ -97,14 +101,14 @@ const projects = [
     link: "https://drive.google.com/folder/xyz",
   },
 
-  {
-    title: "Website Animations",
-    description:
-      "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Website,
-    link: "https://drive.google.com/folder/abc",
-  },
+  // {
+  //   title: "Website Animations",
+  //   description:
+  //     "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
+  //   tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
+  //   image: Website,
+  //   link: "https://drive.google.com/folder/abc",
+  // },
   {
     title: "Gaming Video Edits",
     description:
