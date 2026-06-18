@@ -83,7 +83,7 @@ const Portfolio = () => {
       </header>
 
       {/* Main Content */}
-      <main className="relative px-4 pt-16 pb-28 md:px-20 flex flex-col gap-6 max-w-8xl mx-auto overflow-hidden">
+      <main className="relative px-4 pt-16 pb-16 md:px-20 flex flex-col gap-6 max-w-8xl mx-auto overflow-hidden">
         {/* Background Logo - Hidden on mobile */}
         <div
           className="absolute top-0 h-[490px] w-[210%] pointer-events-none opacity-10 
@@ -131,7 +131,7 @@ const Portfolio = () => {
 
           {/* Social Links */}
           <div className="flex items-center gap-4 mt-6">
-            <motion.a
+            <p className="text-gray-300 text-md">Connect with Me:</p><motion.a
               whileHover={{ scale: 1.2, color: "#E1306C" }}
               href="https://www.instagram.com/garv_fx?igsh=aHIyb24wd3d4NW53"
               aria-label="Instagram"
@@ -147,7 +147,36 @@ const Portfolio = () => {
             </motion.a>
           </div>
         </motion.div>
+
+             {/* Get In Touch Button — bottom center */}
+      <div className="w-full flex justify-center px-4">
+        <motion.a
+          href="#work"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.97 }}
+          className="
+            inline-block
+            px-5 py-2
+            text-sm md:text-base
+            font-semibold tracking-wide
+            text-white
+            border border-white/30
+            rounded-full
+            bg-white/5
+            backdrop-blur-sm
+            hover:bg-white hover:text-[#121212]
+            transition-colors duration-300
+            text-center
+          "
+        >
+          See Work
+        </motion.a>
+      </div>
       </main>
+      
     </div>
   );
 };
