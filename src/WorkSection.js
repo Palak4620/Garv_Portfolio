@@ -34,6 +34,14 @@ const videoMap = {
       title: "Promo Video",
       url: "https://youtu.be/h2wzcmeoHuA?si=--qCOdepj3_2TKZn",
     },
+    {
+      title: "Promo Video",
+      url: "https://youtu.be/KUzLSydysVA?si=t41DFyDyecyJhgIR",
+    },
+    {
+      title: "Promo Video",
+      url: "https://youtu.be/n3ROR7e4iUo?si=3-lD-n6q3_MrxJLs",
+    }
   ],
   2: [
     { title: "Logo Title Animation 1", url: "https://youtu.be/x5cykILO1Rw" },
