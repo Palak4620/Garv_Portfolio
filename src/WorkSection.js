@@ -1,271 +1,512 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import ReactPlayer from "react-player";
-import Gaming_Edits from "./icons/Gaming_Edits.jpg";
-import Promo from "./icons/Promo.png";
-import Shorts from "./icons/Shorts.png";
-// import Website from "./icons/Website.png";
-import Showreel from "./icons/Showreel.png";
-import Logo_Title_Animation from "./icons/Logo_Title_Animation.png";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./firebase";
 
-// Helper to determine if a video is Vimeo
-const isVimeo = (url) => url.includes("vimeo.com");
+/* =====================================================
+   HELPERS
+===================================================== */
 
-// Extract YouTube thumbnail
-const getYouTubeThumbnail = (url) => {
-  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/.*v=)([^?&]+)/);
-  if (ytMatch) {
-    return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+const isYouTube = (url = "") =>
+  /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/embed\/)/i.test(
+    url,
+  );
+
+const isVimeo = (url = "") =>
+  /(?:vimeo\.com\/|player\.vimeo\.com\/)/i.test(url);
+
+const isVideoUrl = (url = "") => isYouTube(url) || isVimeo(url);
+
+const getYouTubeThumbnail = (url = "") => {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([^?&/]+)/i,
+  );
+
+  if (!match) {
+    return "/default_thumb.png";
   }
-  return "/default_thumb.png";
+
+  return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
 };
 
-// Video sets for each project
-const videoMap = {
-  0: [{ title: "Showreel 1", url: "https://youtu.be/3VM-ayBwYMY?si=-C8_78CAFuoNoReV" }],
-
-  1: [
-    { title: "Promo Video", url: "https://youtu.be/9qKOWWM_bzM" },
-    {
-      title: "Promo Video",
-      url: "https://youtu.be/KUzLSydysVA?si=t41DFyDyecyJhgIR",
-    },
-    {
-      title: "Promo Video",
-      url: "https://youtu.be/n3ROR7e4iUo?si=3-lD-n6q3_MrxJLs",
-    },
-    {
-      title: "Promo Video",
-      url: "https://youtu.be/gA13t1-zdVM?si=vrNmYhctbLYva4Pe",
-    },
-    {
-      title: "Promo Video",
-      url: "https://youtu.be/h2wzcmeoHuA?si=--qCOdepj3_2TKZn",
-    },
-  ],
-  2: [
-    { title: "Logo Title Animation 1", url: "https://youtu.be/x5cykILO1Rw" },
-    {
-      title: "Logo Title Animation 2",
-      url: "https://youtu.be/oDUVk-K2CiA?si=4hDvJ8dJ9iMFgJ8h",
-    },
-    { title: "Logo Title Animation 3", url: "https://youtu.be/fOLtinr477s" },
-  ],
-  3: [
-    { title: "Short 1", url: "https://youtu.be/TQjYB0Yhspc?feature=shared" },
-    { title: "Short 2", url: "https://youtu.be/OK3fMbiNwqE?si=EGFN02R3DmyUnoA8" },
-    { title: "Short 3", url: "https://youtu.be/npJXLGYymMM?si=jbbZQKiqyGco42Is" },
-  ],
-
-  // 4: [
-  //   { title: "Website Walkthrough1", url: "https://youtu.be/XQVTTvxBRb0" },
-  //   { title: "Website Walkthrough2", url: "https://youtu.be/LXRg-eyfXso" },
-  // ],
-  4: [
-    { title: "Gameplay 1", url: "https://youtu.be/nKFBvgwh-PA?feature=shared" },
-    { title: "Gameplay 2", url: "https://youtu.be/m0RQO5EcLzE?feature=shared" },
-    { title: "Gameplay 3", url: "https://youtu.be/UfUu4MJPbdk?feature=shared" },
-    { title: "Gameplay 4", url: "https://youtu.be/AZik4nyVT3g?feature=shared" },
-    { title: "Gameplay 5", url: "https://youtu.be/PaSXRX57FoI?feature=shared" },
-    {
-      title: "Gameplay 6",
-      url: "https://youtu.be/H3Ol5ovAGz0?si=vKYzjWFAUB30hrCu",
-    },
-  ],
-};
-
-const projects = [
-  {
-    title: "Portfolio Showreel",
-    description:
-      "This Showreel highlights my motion design expertise blending sleek animations, dynamic compositions, and diverse styles from clean minimalism to cinematic storytelling. I craft visually engaging and impactful motion graphics that elevate brands and ideas. Whether it’s promotional videos, social media visuals, or product showcases, I’ve got you covered.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Showreel,
-    link: "https://vimeo.com/837125126?share=copy",
-  },
-  {
-    title: "Promo Videos",
-    description:
-      "These Promo Videos offers a cinematic look into the information of the products showcased, from game trailer to websites walkthrough. These videos brings a cinematic experience and builds excitement and anticipation for the release of the product.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Promo,
-    link: "#",
-  },
-  {
-    title: " Logo Animations",
-    description:
-      "These logo animations crafted for brands and creators, focus on dynamic visuals, smooth transitions, and impactful reveals to elevate brand identity. From minimal animations to bold cinematic styles, everything is covered.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Logo_Title_Animation,
-    link: "#",
-  },
-
-  {
-    title: "Short-form Content",
-    description:
-      "These short-form content edits made for content creators and brands, focuses on eye catchy visuals, strategic storytelling, and on-brand messaging to boost reach and engagement. From trendy edits to unique styles, everything is covered.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Shorts,
-    link: "https://drive.google.com/folder/xyz",
-  },
-
-  // {
-  //   title: "Website Animations",
-  //   description:
-  //     "These animations made for offers walkthrough to the website's functionality and layout, guiding users to features, menu options and interaction. These animations provide user-friendly navigation through engaging visuals, allowing viewers to explore core functions intuitively.",
-  //   tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-  //   image: Website,
-  //   link: "https://drive.google.com/folder/abc",
-  // },
-  {
-    title: "Gaming Video Edits",
-    description:
-      "Expertly edited gaming montages showcasing high-energy action, memorable plays, and thrilling sequences. These short, impactful videos are optimized for social media, featuring smooth transitions, energetic pacing, and well-timed effects to boost engagement.",
-    tags: ["After Effects", "Premiere Pro", "Illustrator", "Photoshop"],
-    image: Gaming_Edits,
-    link: "https://www.youtube.com/playlist?list=PLsdfcb42cePHPBmKUAFAUolbANN1DMgug",
-  },
-];
+/* =====================================================
+   WORK SECTION
+===================================================== */
 
 const WorkSection = () => {
+  const [projects, setProjects] = useState([]);
+  const [videos, setVideos] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  // Which project's video gallery is open
   const [activeIndex, setActiveIndex] = useState(null);
+
+  // Which gallery video is currently playing
   const [playingVideoIndex, setPlayingVideoIndex] = useState(null);
+
+  // References for scrolling to opened gallery
   const videoRefs = useRef([]);
+
+  /* ===================================================
+     FETCH PROJECTS + VIDEOS
+  =================================================== */
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [projectsSnapshot, videosSnapshot] = await Promise.all([
+          getDocs(collection(db, "projects")),
+          getDocs(collection(db, "videos")),
+        ]);
+
+        const projectList = projectsSnapshot.docs
+          .map((document) => ({
+            id: document.id,
+            ...document.data(),
+          }))
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        const videoList = videosSnapshot.docs
+          .map((document) => ({
+            id: document.id,
+            ...document.data(),
+          }))
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        setProjects(projectList);
+        setVideos(videoList);
+      } catch (error) {
+        console.error("Error fetching portfolio data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  /* ===================================================
+     SCROLL TO VIDEO GALLERY
+  =================================================== */
 
   useEffect(() => {
     if (activeIndex !== null && videoRefs.current[activeIndex]) {
       setTimeout(() => {
-        videoRefs.current[activeIndex].scrollIntoView({
+        videoRefs.current[activeIndex]?.scrollIntoView({
           behavior: "smooth",
           block: "center",
           inline: "nearest",
         });
-      }, 100);
+      }, 150);
     }
   }, [activeIndex]);
+
+  /* ===================================================
+     TOGGLE VIDEO GALLERY
+  =================================================== */
+
+  const toggleProjectVideos = (index) => {
+    setActiveIndex((currentIndex) => (currentIndex === index ? null : index));
+
+    // Stop gallery video when closing/changing gallery
+    setPlayingVideoIndex(null);
+  };
+
+  /* ===================================================
+     OPEN VIDEO GALLERY
+  =================================================== */
+
+  const openProjectVideos = (index) => {
+    setActiveIndex(index);
+    setPlayingVideoIndex(null);
+  };
+
+  /* ===================================================
+     GET PROJECT MEDIA
+  =================================================== */
+
+  const getProjectMedia = (project) => {
+    const mediaType = project.mediaType || (project.imageUrl ? "image" : "url");
+
+    if (mediaType === "url") {
+      return project.mediaUrl || project.link || "";
+    }
+
+    return project.mediaUrl || project.imageUrl || "";
+  };
+
+  /* ===================================================
+     GET PROJECT VIDEOS
+  =================================================== */
+
+  const getProjectVideos = (projectId) => {
+    return videos
+      .filter((video) => video.projectId === projectId)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  };
+
+  /* ===================================================
+     LOADING
+  =================================================== */
+
+  if (loading) {
+    return (
+      <section
+        id="work"
+        className="bg-[#1a1a1a] py-20 text-white px-4 md:px-10 lg:px-20"
+      >
+        <div className="text-center text-gray-500">Loading projects...</div>
+      </section>
+    );
+  }
+
+  /* ===================================================
+     MAIN
+  =================================================== */
 
   return (
     <section
       id="work"
       className="bg-[#1a1a1a] py-20 text-white px-4 md:px-10 lg:px-20"
     >
+      {/* =================================================
+          HEADER
+      ================================================= */}
+
       <div className="text-center mb-14">
         <span className="text-xs text-gray-400 border border-gray-600 px-3 py-1 rounded-full">
           Work
         </span>
+
         <h2 className="text-2xl mt-4 text-gray-300 font-medium">
           Some of the noteworthy projects I have built:
         </h2>
       </div>
 
-      <div className="flex flex-col gap-12 max-w-6xl mx-auto">
-        {projects.map((project, index) => (
-          <div key={index}>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className={`flex flex-col ${
-                index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-              } bg-[#1c1c1c] rounded-xl overflow-hidden`}
-            >
-              {/* Clickable Image */}
-              <div
-                className="md:w-1/2 w-full bg-[#3d3d40] flex items-center justify-center p-6 cursor-pointer"
-                onClick={() => {
-                  setActiveIndex(activeIndex === index ? null : index);
-                  setPlayingVideoIndex(null);
-                }}
-              >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="rounded-lg object-contain max-h-[300px] w-full"
-                />
-              </div>
+      {/* =================================================
+          PROJECTS
+      ================================================= */}
 
-              {/* Description */}
-              <div className="md:w-1/2 w-full bg-[#232323] p-6 flex flex-col justify-center">
-                <h3 className="text-white text-xl font-semibold mb-2">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-gray-300 mb-4">
-                  {project.description}
-                </p>
+      {projects.length === 0 ? (
+        <div className="text-center text-gray-500">No projects available.</div>
+      ) : (
+        <div className="flex flex-col gap-12 max-w-6xl mx-auto">
+          {projects.map((project, index) => {
+            const projectMedia = getProjectMedia(project);
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="bg-[#333] text-sm text-gray-300 px-3 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+            const projectVideos = getProjectVideos(project.id);
 
-                <button
-                  onClick={() => {
-                    setActiveIndex(activeIndex === index ? null : index);
-                    setPlayingVideoIndex(null);
+            const mediaType =
+              project.mediaType || (project.imageUrl ? "image" : "url");
+
+            const mediaIsVideo =
+              mediaType === "url" && isVideoUrl(projectMedia);
+
+            const mediaIsExternalLink =
+              mediaType === "url" && projectMedia && !mediaIsVideo;
+
+            return (
+              <div key={project.id}>
+                {/* =================================
+                      PROJECT CARD
+                  ================================= */}
+
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y: 50,
                   }}
-                  className="text-sm text-blue-400 hover:underline flex items-center gap-1"
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.1,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
+                  className={`flex flex-col ${
+                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  } bg-[#1c1c1c] rounded-xl overflow-hidden`}
                 >
-                  <span>🎬</span>{" "}
-                  {activeIndex === index ? "Hide Videos" : "Watch Videos"}
-                </button>
-              </div>
-            </motion.div>
-
-            {/* Video Gallery */}
-            {activeIndex === index && (
-              <div
-                ref={(el) => (videoRefs.current[index] = el)}
-                className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-[#111] p-6 rounded-xl"
-              >
-                {videoMap[index]?.map((video, vidIndex) => (
-                  <div
-                    key={vidIndex}
-                    className={`relative w-full ${
-                      index === 3 ? "aspect-[9/16]" : "aspect-video"
-                    } bg-[#333] rounded-lg overflow-hidden cursor-pointer hover:opacity-80`}
-                    onClick={() => setPlayingVideoIndex(vidIndex)}
+  
+                    <div
+                    className={`md:w-1/2 w-full bg-[#3d3d40] flex items-center justify-center p-6  ${
+                      projectVideos.length > 0 && !mediaIsExternalLink
+                        ? "cursor-pointer"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      if (
+                        projectVideos.length > 0 &&
+                        !mediaIsVideo &&
+                        !mediaIsExternalLink
+                      ) {
+                        toggleProjectVideos(index);
+                      }
+                    }}
                   >
-                    {playingVideoIndex === vidIndex ? (
-                      <ReactPlayer
-                        url={video.url}
-                        width="100%"
-                        height="100%"
-                        controls
-                        playing
-                        style={{ objectFit: "cover" }}
-                      />
-                    ) : isVimeo(video.url) ? (
-                      <iframe
-                        src={video.url}
-                        width="100%"
-                        height="100%"
-                        frameBorder="0"
-                        allow="autoplay; fullscreen"
-                        allowFullScreen
-                        title={video.title}
-                        className="w-full h-full object-cover rounded-lg"
-                      ></iframe>
+                    {/* =========================
+                          MAIN PROJECT VIDEO
+                      ========================= */}
+
+                    {mediaIsVideo ? (
+                      <div
+                        className="w-full aspect-video rounded-lg overflow-hidden bg-black"
+                        onClick={(e) => {
+                          if (projectVideos.length > 0) {
+                            openProjectVideos(index);
+                          }
+                        }}
+                      >
+                        <ReactPlayer
+                          url={projectMedia}
+                          width="100%"
+                          height="100%"
+                          controls
+                          light={
+                            isYouTube(projectMedia)
+                              ? getYouTubeThumbnail(projectMedia)
+                              : true
+                          }
+                          playIcon={
+                            <div className="w-14 h-14 rounded-full bg-black/70 text-black flex items-center justify-center text-xl">
+                              ▶
+                            </div>
+                          }
+                        />
+                      </div>
+                    ) : mediaIsExternalLink ? (
+                      /* =========================
+                           NORMAL URL
+                        ========================= */
+
+                      <a
+                        href={projectMedia}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full aspect-video rounded-lg bg-[#232323] border border-zinc-700 hover:border-zinc-500 transition flex flex-col items-center justify-center gap-3 text-center p-6"
+                      >
+                        <span className="text-4xl">↗</span>
+
+                        {/* <span className="text-sm text-gray-300">
+                          View Project
+                        </span> */}
+
+                        <span className="text-xs text-gray-500 break-all max-w-full">
+                          {projectMedia}
+                        </span>
+                      </a>
+                    ) : projectMedia ? (
+                      /* =========================
+                           PROJECT IMAGE
+                        ========================= */
+
+                      <div className="relative w-full">
+                        <img
+                          src={projectMedia}
+                          alt={project.title}
+                          className="rounded-lg object-contain max-h-[300px] w-full"
+                        />
+
+                        {/* IMAGE CLICK HINT */}
+                      </div>
                     ) : (
-                      <img
-                        src={getYouTubeThumbnail(video.url)}
-                        alt={video.title}
-                        className="w-full h-full object-cover"
-                      />
+                      /* =========================
+                           NO MEDIA
+                        ========================= */
+
+                      <div className="rounded-lg w-full aspect-video bg-[#232323] flex items-center justify-center text-gray-500">
+                        No Media
+                      </div>
                     )}
                   </div>
-                ))}
+
+                  {/* ===============================
+                        PROJECT DESCRIPTION
+                    =============================== */}
+
+                  <div className="md:w-1/2 w-full bg-[#232323] p-6 flex flex-col justify-center">
+                    <h3 className="text-white text-xl font-semibold mb-2">
+                      {project.title}
+                    </h3>
+
+                    <p className="text-sm text-gray-300 mb-4">
+                      {project.description}
+                    </p>
+
+                    {/* =========================
+                          TAGS
+                      ========================= */}
+
+                    {Array.isArray(project.tags) && project.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.tags.map((tag, i) => (
+                          <span
+                            key={`${tag}-${i}`}
+                            className="bg-[#333] text-sm text-gray-300 px-3 py-1 rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* =========================
+                          NORMAL PROJECT LINK
+                      ========================= */}
+
+                    {/* {project.link &&
+                      project.link !== "#" &&
+                      project.link !== projectMedia && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-sm text-blue-400 hover:underline mb-3 inline-block"
+                        >
+                          View Project ↗
+                        </a>
+                      )} */}
+
+                    {/* =========================
+                          VIDEO GALLERY BUTTON
+                      ========================= */}
+
+                    {projectVideos.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => toggleProjectVideos(index)}
+                        className="text-sm text-blue-400 hover:underline flex items-center gap-1 w-fit"
+                      >
+                        <span>🎬</span>
+
+                        {activeIndex === index
+                          ? "Hide Videos"
+                          : `Watch Videos (${projectVideos.length})`}
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+
+                {/* =================================
+                      VIDEO GALLERY
+                  ================================= */}
+
+                {activeIndex === index && projectVideos.length > 0 && (
+                  <div
+                    ref={(el) => {
+                      videoRefs.current[index] = el;
+                    }}
+                    className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-[#111] p-6 rounded-xl"
+                  >
+                    {projectVideos.map((video, videoIndex) => (
+                      <div
+                        key={video.id}
+                        className={`relative w-full ${
+                          project.title.toLowerCase().includes("short")
+                            ? "aspect-[9/16]"
+                            : "aspect-video"
+                        } bg-[#333] rounded-lg overflow-hidden`}
+                      >
+                        {/* =================================
+                                  PLAYING VIDEO
+                              ================================= */}
+
+                        {playingVideoIndex === videoIndex ? (
+                          <ReactPlayer
+                            url={video.url}
+                            width="100%"
+                            height="100%"
+                            controls
+                            playing
+                          />
+                        ) : isYouTube(video.url) ? (
+                          /* =================================
+                                   YOUTUBE THUMBNAIL
+                                ================================= */
+
+                          <div className="relative w-full h-full">
+                            <img
+                              src={getYouTubeThumbnail(video.url)}
+                              alt={video.title}
+                              className="w-full h-full object-cover"
+                            />
+
+                            {/* =========================
+                                      PLAY BUTTON
+                                  ========================= */}
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPlayingVideoIndex(videoIndex);
+                              }}
+                              className="absolute inset-0 flex items-center justify-center"
+                            >
+                              <div className="w-12 h-12 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 transition">
+                                ▶
+                              </div>
+                            </button>
+                          </div>
+                        ) : isVimeo(video.url) ? (
+                          /* =================================
+                                   VIMEO PREVIEW
+                                ================================= */
+
+                          <ReactPlayer
+                            url={video.url}
+                            width="100%"
+                            height="100%"
+                            light
+                            controls
+                            playIcon={
+                              <div className="w-12 h-12 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 transition">
+                                ▶
+                              </div>
+                            }
+                          />
+                        ) : (
+                          /* =================================
+                                   OTHER VIDEO URL
+                                ================================= */
+
+                          <ReactPlayer
+                            url={video.url}
+                            width="100%"
+                            height="100%"
+                            light
+                            controls
+                            playIcon={
+                              <div className="w-12 h-12 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 transition">
+                                ▶
+                              </div>
+                            }
+                          />
+                        )}
+
+                        {/* =========================
+                                  VIDEO TITLE
+                              ========================= */}
+
+                        {/* <div className="absolute bottom-0 left-0 right-0 bg-black/70 px-3 py-2 text-xs text-white truncate pointer-events-none">
+                          {video.title}
+                        </div> */}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 };
