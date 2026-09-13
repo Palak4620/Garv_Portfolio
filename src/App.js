@@ -10,6 +10,8 @@ import AdminLogin from "./AdminLogin";
 import AdminDashboard from "./AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 
+import ProjectPage from "./ProjectPage";
+
 function Home() {
   return (
     <div>
@@ -37,6 +39,10 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* PROJECT PAGES */}
+
+        <Route path="/works/:slug" element={<ProjectPage />} />
       </Routes>
     </BrowserRouter>
   );
