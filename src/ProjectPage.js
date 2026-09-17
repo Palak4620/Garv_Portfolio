@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { db } from "./firebase";
 import Header from "./Header";
@@ -33,8 +33,25 @@ const getYouTubeThumbnail = (url = "") => {
 
 function ProjectPage() {
   const { slug } = useParams();
+  const location = useLocation();
 
-  const projectTitle = projectMap[slug];
+  // -----------------------------------------
+  // Determine which project page is being shown
+  // -----------------------------------------
+
+  let actualSlug = slug;
+
+  // /motiondesign and /motiongraphics
+  // should show the same content as /works/promo-videos
+
+  if (
+    location.pathname === "/motiondesign" ||
+    location.pathname === "/motiongraphics"
+  ) {
+    actualSlug = "promo-videos";
+  }
+
+  const projectTitle = projectMap[actualSlug];
 
   const [project, setProject] = useState(null);
   const [videos, setVideos] = useState([]);
@@ -93,7 +110,12 @@ function ProjectPage() {
     }
   }, [projectTitle]);
 
-  const isShortForm = slug === "short-form-content";
+  // Short-form page should use vertical videos
+  const isShortForm = actualSlug === "short-form-content";
+
+  // -----------------------------------------
+  // Loading
+  // -----------------------------------------
 
   if (loading) {
     return (
@@ -102,6 +124,10 @@ function ProjectPage() {
       </div>
     );
   }
+
+  // -----------------------------------------
+  // Page Not Found
+  // -----------------------------------------
 
   if (!projectTitle) {
     return (
@@ -115,24 +141,29 @@ function ProjectPage() {
     );
   }
 
+  // -----------------------------------------
+  // Page
+  // -----------------------------------------
+
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white overflow-hidden relative">
       <Header />
 
       <main className="relative px-4 pb-16 md:px-20 max-w-8xl mx-auto overflow-hidden">
-        {/* Background Logo */}
+        {/* ================= BACKGROUND LOGO ================= */}
+
         <div
           className="
-      absolute
-      top-0
-      h-[490px]
-      w-[210%]
-      pointer-events-none
-      opacity-10
-      right-[-400px]
-      sm:right-[-200px]
-      md:right-[-450px]
-    "
+            absolute
+            top-0
+            h-[490px]
+            w-[210%]
+            pointer-events-none
+            opacity-10
+            right-[-400px]
+            sm:right-[-200px]
+            md:right-[-450px]
+          "
         >
           <img
             src={bgLogo}
@@ -142,7 +173,7 @@ function ProjectPage() {
         </div>
 
         <div className="max-w-6xl mx-auto relative z-10">
-          {/* PAGE TITLE */}
+          {/* ================= PAGE TITLE ================= */}
 
           <div className="text-center pb-14">
             <h1 className="text-4xl md:text-5xl font-semibold mt-5">
@@ -156,7 +187,7 @@ function ProjectPage() {
             )}
           </div>
 
-          {/* VIDEOS */}
+          {/* ================= VIDEOS ================= */}
 
           {videos.length === 0 ? (
             <div className="text-center py-20">
@@ -173,11 +204,15 @@ function ProjectPage() {
 
                 return (
                   <div key={video.id} className="group">
+                    {/* VIDEO CONTAINER */}
+
                     <div
                       className={`relative w-full ${
                         isShortForm ? "aspect-[9/16]" : "aspect-video"
                       } bg-[#252525] rounded-xl overflow-hidden`}
                     >
+                      {/* PLAYING VIDEO */}
+
                       {isPlaying ? (
                         <ReactPlayer
                           url={video.url}
@@ -187,6 +222,8 @@ function ProjectPage() {
                           playing
                         />
                       ) : isYouTube(video.url) ? (
+                        /* YOUTUBE */
+
                         <button
                           type="button"
                           onClick={() => setPlayingVideo(index)}
@@ -199,12 +236,14 @@ function ProjectPage() {
                           />
 
                           <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition">
-                            <div className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center text-xl shadow-lg">
+                            <div className="w-14 h-14 rounded-full bg-white/50 text-white flex items-center justify-center text-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               ▶
                             </div>
                           </div>
                         </button>
                       ) : isVimeo(video.url) ? (
+                        /* VIMEO */
+
                         <div className="w-full h-full">
                           <ReactPlayer
                             url={video.url}
@@ -215,6 +254,8 @@ function ProjectPage() {
                           />
                         </div>
                       ) : (
+                        /* OTHER URL */
+
                         <a
                           href={video.url}
                           target="_blank"
@@ -225,6 +266,8 @@ function ProjectPage() {
                         </a>
                       )}
                     </div>
+
+                    {/* VIDEO TITLE */}
 
                     <h2 className="text-lg font-medium mt-4">{video.title}</h2>
                   </div>

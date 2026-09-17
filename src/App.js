@@ -43,6 +43,17 @@ function App() {
         {/* PROJECT PAGES */}
 
         <Route path="/works/:slug" element={<ProjectPage />} />
+
+        {/* Alternate URLs for Promo Videos */}
+        <Route
+          path="/motiondesign"
+          element={<ProjectPage />}
+        />
+
+        <Route
+          path="/motiongraphics"
+          element={<ProjectPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

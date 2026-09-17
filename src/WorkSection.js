@@ -233,8 +233,7 @@ const WorkSection = () => {
                     index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                   } bg-[#1c1c1c] rounded-xl overflow-hidden`}
                 >
-  
-                    <div
+                  <div
                     className={`md:w-1/2 w-full bg-[#3d3d40] flex items-center justify-center p-6  ${
                       projectVideos.length > 0 && !mediaIsExternalLink
                         ? "cursor-pointer"
@@ -432,7 +431,7 @@ const WorkSection = () => {
                                    YOUTUBE THUMBNAIL
                                 ================================= */
 
-                          <div className="relative w-full h-full">
+                          <div className="group relative w-full h-full">
                             <img
                               src={getYouTubeThumbnail(video.url)}
                               alt={video.title}
@@ -450,7 +449,7 @@ const WorkSection = () => {
                               }}
                               className="absolute inset-0 flex items-center justify-center"
                             >
-                              <div className="w-12 h-12 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 transition">
+                              <div className="w-12 h-12 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-300">
                                 ▶
                               </div>
                             </button>
