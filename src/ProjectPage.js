@@ -69,168 +69,149 @@ function ProjectPage() {
      GET CURRENT URL
   ======================================================= */
 
-  const getCurrentRoute = () => {
-    const pathname = location.pathname;
-
-    /*
-      /works/promo-videos
-      becomes:
-      promo-videos
-    */
-
-    if (pathname.startsWith("/works/")) {
-      return normalizeSlug(pathname.replace("/works/", ""));
-    }
-
-    /*
-      /motiondesign
-      /motiongraphics
-
-      becomes:
-      motiondesign
-      motiongraphics
-    */
-
-    return normalizeSlug(pathname);
-  };
 
   /* =======================================================
      FETCH PROJECT + VIDEOS
   ======================================================= */
 
-  useEffect(() => {
-    const fetchProjectVideos = async () => {
-      try {
-        setLoading(true);
+useEffect(() => {
+  const fetchProjectVideos = async () => {
+    try {
+      setLoading(true);
 
-        const [projectsSnapshot, videosSnapshot] = await Promise.all([
-          getDocs(collection(db, "projects")),
-          getDocs(collection(db, "videos")),
-        ]);
+      const [
+        projectsSnapshot,
+        videosSnapshot,
+      ] = await Promise.all([
+        getDocs(collection(db, "projects")),
+        getDocs(collection(db, "videos")),
+      ]);
 
-        /* ================================================
-           PROJECTS
-        ================================================ */
-
-        const projectList = projectsSnapshot.docs.map((document) => ({
+      const projectList =
+        projectsSnapshot.docs.map((document) => ({
           id: document.id,
           ...document.data(),
         }));
 
-        /* ================================================
-           VIDEOS
-        ================================================ */
-
-        const videoList = videosSnapshot.docs.map((document) => ({
+      const videoList =
+        videosSnapshot.docs.map((document) => ({
           id: document.id,
           ...document.data(),
         }));
 
-        /* ================================================
-           CURRENT ROUTE
-        ================================================ */
+      // CURRENT URL
+      const pathname = location.pathname;
 
-        const currentRoute = getCurrentRoute();
+      const currentRoute = pathname.startsWith("/works/")
+        ? normalizeSlug(
+            pathname.replace("/works/", "")
+          )
+        : normalizeSlug(pathname);
 
-        console.log("Current project route:", currentRoute);
+      console.log(
+        "Current project route:",
+        currentRoute
+      );
 
-        console.log("Projects from Firestore:", projectList);
+      console.log(
+        "Projects from Firestore:",
+        projectList
+      );
 
-        /* ================================================
-           FIND PROJECT
+      // FIND PROJECT
+      const foundProject =
+        projectList.find((item) => {
+          const projectSlug = normalizeSlug(
+            item.slug || ""
+          );
 
-           Match URL with:
+          const aliases =
+            Array.isArray(item.aliases)
+              ? item.aliases.map((alias) =>
+                  normalizeSlug(alias)
+                )
+              : [];
 
-           1. project.slug
+          const generatedSlug = generateSlug(
+            item.title || ""
+          );
 
-           OR
+          const documentId = normalizeSlug(
+            item.id || ""
+          );
 
-           2. project.aliases
-        ================================================ */
-        const foundProject = projectList.find((item) => {
-          // 1. Explicit slug from Firestore
-          const projectSlug = normalizeSlug(item.slug || "");
-
-          // 2. Aliases from Firestore
-          const aliases = Array.isArray(item.aliases)
-            ? item.aliases.map((alias) => normalizeSlug(alias))
-            : [];
-
-          // 3. Generate slug from title
-          const generatedSlug = generateSlug(item.title || "");
-
-          // 4. Firestore document ID
-          const documentId = normalizeSlug(item.id || "");
-
-          console.log("Checking project:", item.title, {
-            documentId,
-            slug: projectSlug,
-            generatedSlug,
-            aliases,
-            currentRoute,
-          });
+          console.log(
+            "Checking project:",
+            item.title,
+            {
+              documentId,
+              slug: projectSlug,
+              generatedSlug,
+              aliases,
+              currentRoute,
+            }
+          );
 
           return (
-            // Explicit slug
             projectSlug === currentRoute ||
-            // Additional URLs
             aliases.includes(currentRoute) ||
-            // Old projects without slug
-            (!projectSlug && generatedSlug === currentRoute) ||
-            // Firestore document ID
+            (!projectSlug &&
+              generatedSlug === currentRoute) ||
             documentId === currentRoute
           );
         });
-        /* ================================================
-           PROJECT NOT FOUND
-        ================================================ */
 
-        if (!foundProject) {
-          console.log("No project found for route:", currentRoute);
-
-          setProject(null);
-          setVideos([]);
-
-          return;
-        }
-
-        console.log("Found project:", foundProject);
-
-        setProject(foundProject);
-
-        /* ================================================
-           GET VIDEOS USING PROJECT ID
-
-           This is important.
-
-           Videos are NOT connected using
-           project title.
-
-           They are connected using:
-
-           video.projectId === project.id
-        ================================================ */
-
-        const projectVideos = videoList
-          .filter((video) => video.projectId === foundProject.id)
-          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-        console.log("Videos for project:", projectVideos);
-
-        setVideos(projectVideos);
-      } catch (error) {
-        console.error("Error fetching project videos:", error);
+      if (!foundProject) {
+        console.log(
+          "No project found for route:",
+          currentRoute
+        );
 
         setProject(null);
         setVideos([]);
-      } finally {
-        setLoading(false);
+
+        return;
       }
-    };
 
-    fetchProjectVideos();
-  }, [location.pathname]);
+      console.log(
+        "Found project:",
+        foundProject
+      );
 
+      setProject(foundProject);
+
+      const projectVideos =
+        videoList
+          .filter(
+            (video) =>
+              video.projectId ===
+              foundProject.id
+          )
+          .sort(
+            (a, b) =>
+              (a.order ?? 0) -
+              (b.order ?? 0)
+          );
+
+      console.log(
+        "Videos for project:",
+        projectVideos
+      );
+
+      setVideos(projectVideos);
+
+    } catch (error) {
+      console.error(
+        "Error fetching project/videos:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProjectVideos();
+}, [location.pathname]);
   /* =======================================================
      SHORT FORM DETECTION
   ======================================================= */
