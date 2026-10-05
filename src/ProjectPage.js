@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { db } from "./firebase";
 import Header from "./Header";
@@ -58,7 +58,6 @@ const generateSlug = (value = "") => {
 ========================================================= */
 
 function ProjectPage() {
-  const { slug } = useParams();
   const location = useLocation();
 
   const [project, setProject] = useState(null);
