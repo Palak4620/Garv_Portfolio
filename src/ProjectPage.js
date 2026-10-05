@@ -7,12 +7,6 @@ import Header from "./Header";
 import FooterSection from "./FooterSection";
 import bgLogo from "./Garv_logo_enhanched.png";
 
-const projectMap = {
-  "promo-videos": "Promo Videos",
-  "logo-animations": "Logo Animations",
-  "short-form-content": "Short-form Content",
-};
-
 const isYouTube = (url = "") =>
   /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/embed\/)/i.test(
     url,
@@ -31,32 +25,79 @@ const getYouTubeThumbnail = (url = "") => {
   return `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
 };
 
+/*
+  Converts:
+
+  "promo-videos"
+  "/promo-videos"
+  "Promo Videos"
+
+  into a clean comparable value.
+*/
+const normalizeSlug = (value = "") => {
+  return value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/^\/+|\/+$/g, "");
+};
+
+const generateSlug = (value = "") => {
+  return value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
+
+/* =========================================================
+   PROJECT PAGE
+========================================================= */
+
 function ProjectPage() {
   const { slug } = useParams();
   const location = useLocation();
-
-  // -----------------------------------------
-  // Determine which project page is being shown
-  // -----------------------------------------
-
-  let actualSlug = slug;
-
-  // /motiondesign and /motiongraphics
-  // should show the same content as /works/promo-videos
-
-  if (
-    location.pathname === "/motiondesign" ||
-    location.pathname === "/motiongraphics"
-  ) {
-    actualSlug = "promo-videos";
-  }
-
-  const projectTitle = projectMap[actualSlug];
 
   const [project, setProject] = useState(null);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playingVideo, setPlayingVideo] = useState(null);
+
+  /* =======================================================
+     GET CURRENT URL
+  ======================================================= */
+
+  const getCurrentRoute = () => {
+    const pathname = location.pathname;
+
+    /*
+      /works/promo-videos
+      becomes:
+      promo-videos
+    */
+
+    if (pathname.startsWith("/works/")) {
+      return normalizeSlug(pathname.replace("/works/", ""));
+    }
+
+    /*
+      /motiondesign
+      /motiongraphics
+
+      becomes:
+      motiondesign
+      motiongraphics
+    */
+
+    return normalizeSlug(pathname);
+  };
+
+  /* =======================================================
+     FETCH PROJECT + VIDEOS
+  ======================================================= */
 
   useEffect(() => {
     const fetchProjectVideos = async () => {
@@ -68,54 +109,157 @@ function ProjectPage() {
           getDocs(collection(db, "videos")),
         ]);
 
-        const projectList = projectsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
+        /* ================================================
+           PROJECTS
+        ================================================ */
+
+        const projectList = projectsSnapshot.docs.map((document) => ({
+          id: document.id,
+          ...document.data(),
         }));
 
-        const foundProject = projectList.find(
-          (item) =>
-            item.title?.trim().toLowerCase() ===
-            projectTitle?.trim().toLowerCase(),
-        );
+        /* ================================================
+           VIDEOS
+        ================================================ */
+
+        const videoList = videosSnapshot.docs.map((document) => ({
+          id: document.id,
+          ...document.data(),
+        }));
+
+        /* ================================================
+           CURRENT ROUTE
+        ================================================ */
+
+        const currentRoute = getCurrentRoute();
+
+        console.log("Current project route:", currentRoute);
+
+        console.log("Projects from Firestore:", projectList);
+
+        /* ================================================
+           FIND PROJECT
+
+           Match URL with:
+
+           1. project.slug
+
+           OR
+
+           2. project.aliases
+        ================================================ */
+        const foundProject = projectList.find((item) => {
+          // 1. Explicit slug from Firestore
+          const projectSlug = normalizeSlug(item.slug || "");
+
+          // 2. Aliases from Firestore
+          const aliases = Array.isArray(item.aliases)
+            ? item.aliases.map((alias) => normalizeSlug(alias))
+            : [];
+
+          // 3. Generate slug from title
+          const generatedSlug = generateSlug(item.title || "");
+
+          // 4. Firestore document ID
+          const documentId = normalizeSlug(item.id || "");
+
+          console.log("Checking project:", item.title, {
+            documentId,
+            slug: projectSlug,
+            generatedSlug,
+            aliases,
+            currentRoute,
+          });
+
+          return (
+            // Explicit slug
+            projectSlug === currentRoute ||
+            // Additional URLs
+            aliases.includes(currentRoute) ||
+            // Old projects without slug
+            (!projectSlug && generatedSlug === currentRoute) ||
+            // Firestore document ID
+            documentId === currentRoute
+          );
+        });
+        /* ================================================
+           PROJECT NOT FOUND
+        ================================================ */
 
         if (!foundProject) {
+          console.log("No project found for route:", currentRoute);
+
           setProject(null);
           setVideos([]);
+
           return;
         }
 
+        console.log("Found project:", foundProject);
+
         setProject(foundProject);
 
-        const projectVideos = videosSnapshot.docs
-          .map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
+        /* ================================================
+           GET VIDEOS USING PROJECT ID
+
+           This is important.
+
+           Videos are NOT connected using
+           project title.
+
+           They are connected using:
+
+           video.projectId === project.id
+        ================================================ */
+
+        const projectVideos = videoList
           .filter((video) => video.projectId === foundProject.id)
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        console.log("Videos for project:", projectVideos);
 
         setVideos(projectVideos);
       } catch (error) {
         console.error("Error fetching project videos:", error);
+
+        setProject(null);
+        setVideos([]);
       } finally {
         setLoading(false);
       }
     };
 
-    if (projectTitle) {
-      fetchProjectVideos();
-    } else {
-      setLoading(false);
-    }
-  }, [projectTitle]);
+    fetchProjectVideos();
+  }, [location.pathname]);
 
-  // Short-form page should use vertical videos
-  const isShortForm = actualSlug === "short-form-content";
+  /* =======================================================
+     SHORT FORM DETECTION
+  ======================================================= */
 
-  // -----------------------------------------
-  // Loading
-  // -----------------------------------------
+  /*
+    We don't use the project TITLE here.
+
+    This makes it independent from the title.
+
+    If you rename:
+
+    Short-form Content
+    ->
+    Social Media Reels
+
+    then slug remains:
+
+    short-form-content
+
+    and the vertical layout continues.
+  */
+
+  const isShortForm =
+    normalizeSlug(project?.slug || "") === "short-form-content";
+
+  /* =======================================================
+     LOADING
+  ======================================================= */
 
   if (loading) {
     return (
@@ -125,14 +269,18 @@ function ProjectPage() {
     );
   }
 
-  // -----------------------------------------
-  // Page Not Found
-  // -----------------------------------------
+  /* =======================================================
+     PAGE NOT FOUND
+  ======================================================= */
 
-  if (!projectTitle) {
+  if (!project) {
     return (
       <div className="min-h-screen bg-[#1a1a1a] text-white flex flex-col items-center justify-center px-4">
         <h1 className="text-3xl font-semibold mb-4">Page Not Found</h1>
+
+        <p className="text-gray-500 mb-6 text-center">
+          No project is configured for this URL.
+        </p>
 
         <Link to="/" className="text-blue-400 hover:underline">
           ← Back to Home
@@ -141,16 +289,18 @@ function ProjectPage() {
     );
   }
 
-  // -----------------------------------------
-  // Page
-  // -----------------------------------------
+  /* =======================================================
+     PAGE
+  ======================================================= */
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white overflow-hidden relative">
       <Header />
 
       <main className="relative px-4 pb-16 md:px-20 max-w-8xl mx-auto overflow-hidden">
-        {/* ================= BACKGROUND LOGO ================= */}
+        {/* =================================================
+            BACKGROUND LOGO
+        ================================================= */}
 
         <div
           className="
@@ -173,21 +323,25 @@ function ProjectPage() {
         </div>
 
         <div className="max-w-6xl mx-auto relative z-10">
-          {/* ================= PAGE TITLE ================= */}
+          {/* =================================================
+              PAGE TITLE
+          ================================================= */}
 
           <div className="text-center pb-14">
             <h1 className="text-4xl md:text-5xl font-semibold mt-5">
-              {projectTitle}
+              {project.title}
             </h1>
 
-            {project?.description && (
+            {project.description && (
               <p className="max-w-2xl mx-auto mt-5 text-gray-400">
                 {project.description}
               </p>
             )}
           </div>
 
-          {/* ================= VIDEOS ================= */}
+          {/* =================================================
+              VIDEOS
+          ================================================= */}
 
           {videos.length === 0 ? (
             <div className="text-center py-20">
@@ -204,14 +358,18 @@ function ProjectPage() {
 
                 return (
                   <div key={video.id} className="group">
-                    {/* VIDEO CONTAINER */}
+                    {/* ===================================
+                          VIDEO CONTAINER
+                      =================================== */}
 
                     <div
                       className={`relative w-full ${
                         isShortForm ? "aspect-[9/16]" : "aspect-video"
                       } bg-[#252525] rounded-xl overflow-hidden`}
                     >
-                      {/* PLAYING VIDEO */}
+                      {/* =================================
+                            PLAYING VIDEO
+                        ================================= */}
 
                       {isPlaying ? (
                         <ReactPlayer
@@ -222,7 +380,9 @@ function ProjectPage() {
                           playing
                         />
                       ) : isYouTube(video.url) ? (
-                        /* YOUTUBE */
+                        /* =================================
+                             YOUTUBE
+                          ================================= */
 
                         <button
                           type="button"
@@ -235,14 +395,18 @@ function ProjectPage() {
                             className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
                           />
 
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition">
-                            <div className="w-14 h-14 rounded-full bg-white/50 text-white flex items-center justify-center text-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          {/* HOVER OVERLAY */}
+
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all duration-300">
+                            <div className="w-14 h-14 rounded-full bg-black/50 text-white flex items-center justify-center text-xl shadow-lg opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-300">
                               ▶
                             </div>
                           </div>
                         </button>
                       ) : isVimeo(video.url) ? (
-                        /* VIMEO */
+                        /* =================================
+                             VIMEO
+                          ================================= */
 
                         <div className="w-full h-full">
                           <ReactPlayer
@@ -254,7 +418,9 @@ function ProjectPage() {
                           />
                         </div>
                       ) : (
-                        /* OTHER URL */
+                        /* =================================
+                             OTHER URL
+                          ================================= */
 
                         <a
                           href={video.url}
@@ -267,7 +433,9 @@ function ProjectPage() {
                       )}
                     </div>
 
-                    {/* VIDEO TITLE */}
+                    {/* ===================================
+                          VIDEO TITLE
+                      =================================== */}
 
                     <h2 className="text-lg font-medium mt-4">{video.title}</h2>
                   </div>
